@@ -56,7 +56,7 @@ myHook.detach();
 // if you have an Ember app and already use Ember.Logger
 var Hook = require('console-hook');
 var myHook = Hook(Ember.Logger).attach((method, args) => {
-  // method is the console[method] string, always "error"
+  // method is the console[method] string
   // args is the arguments object passed to console[method]
 });
 
