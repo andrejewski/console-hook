@@ -1,6 +1,6 @@
 {
   "name": "console-hook",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "console hooks for override and capture",
   "main": "index.js",
   "scripts": {
