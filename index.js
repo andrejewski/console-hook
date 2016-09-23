@@ -1,7 +1,7 @@
 (function() {
 
 var allMethods = ['assert', 'debug', 'dir', 'dirxml', 'error', 'info', 'log', 'table', 'trace', 'warn'];
-var supportedMethods = allMethods.filter(m => typeof console[m] === 'function');
+var supportedMethods = allMethods.filter(function(m) { return typeof console[m] === 'function';});
 
 function Hook(logger, silent) {
   if (!(this instanceof Hook)) {

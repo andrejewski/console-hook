@@ -1,27 +1,27 @@
-const assert = require('assert');
-const Hook = require('..');
+var assert = require('assert');
+var Hook = require('..');
 
 function mockLogger() {
-  const logs = [];
-  const warns = [];
+  var logs = [];
+  var warns = [];
   return {
-    logs,
-    log(message) {
+    logs: logs,
+    log: function(message) {
       logs.push(message);
     },
-    warns,
-    warn(message) {
+    warns: warns,
+    warn: function warn(message) {
       warns.push(message);
     }
   };
 }
 
-describe('console-hook', () => {
-  describe('constructor(logger, silent)', () => {
-    it('should use the passed logger if provided', () => {
-      const logger = mockLogger();
-      const message = 'test';
-      const hook = Hook(logger).attach('log', (method, args) => {
+describe('console-hook', function() {
+  describe('constructor(logger, silent)', function() {
+    it('should use the passed logger if provided', function() {
+      var logger = mockLogger();
+      var message = 'test';
+      var hook = Hook(logger).attach('log', function(method, args) {
         assert.equal(args[0], message);
       });
 
@@ -29,9 +29,9 @@ describe('console-hook', () => {
       assert.equal(logger.logs[0], message);
     });
 
-    it('should use the default console if no logger is provided', () => {
-      const message = '      ✓ *console output worked*';
-      const hook = Hook().attach((method, args) => {
+    it('should use the default console if no logger is provided', function() {
+      var message = '      ✓ *console output worked*';
+      var hook = Hook().attach(function(method, args) {
         assert.equal(method, 'log');
         assert.equal(args[0], message);
       });
@@ -40,10 +40,10 @@ describe('console-hook', () => {
       hook.detach();
     });
 
-    it('should not call underlying logger methods if silent', () => {
-      const logger = mockLogger();
-      const message = 'test';
-      const hook = Hook(logger, true).attach('log', (method, args) => {
+    it('should not call underlying logger methods if silent', function() {
+      var logger = mockLogger();
+      var message = 'test';
+      var hook = Hook(logger, true).attach('log', function(method, args) {
         assert.equal(args[0], message);
       });
 
@@ -52,12 +52,12 @@ describe('console-hook', () => {
     });
   });
 
-  describe('attach(method, hook)', () => {
-    it('should add the hook to the method', () => {
-      const logger = mockLogger();
-      const message = 'test';
+  describe('attach(method, hook)', function() {
+    it('should add the hook to the method', function() {
+      var logger = mockLogger();
+      var message = 'test';
       var hookCalls = 0;
-      const hook = Hook(logger).attach('log', (method, args) => {
+      var hook = Hook(logger).attach('log', function(method, args) {
         hookCalls++;
         assert.equal(method, 'log');
         assert.equal(args[0], message);
@@ -68,12 +68,12 @@ describe('console-hook', () => {
       assert.equal(hookCalls, 1);
     });
 
-    it('should add the hook to all methods is method is not provided', () => {
-      const methods = ['log', 'warn'];
-      const messages = ['test1', 'test2'];
-      const logger = mockLogger();
+    it('should add the hook to all methods is method is not provided', function() {
+      var methods = ['log', 'warn'];
+      var messages = ['test1', 'test2'];
+      var logger = mockLogger();
       var hookCalls = 0;
-      const hook = Hook(logger).attach((method, args) => {
+      var hook = Hook(logger).attach(function(method, args) {
         assert.equal(method, methods[hookCalls]);
         assert.equal(args[0], messages[hookCalls]);
         hookCalls++;
@@ -86,18 +86,18 @@ describe('console-hook', () => {
       assert.equal(hookCalls, 2);
     });
 
-    it('should return itself', () => {
-      const hook = Hook(mockLogger());
-      assert.equal(hook, hook.attach((method, args) => void 0));
+    it('should return itself', function() {
+      var hook = Hook(mockLogger());
+      assert.equal(hook, hook.attach(function(method, args) {return void 0;}));
     });
   });
 
-  describe('detach(method, hook)', () => {
-    it('should remove the hook from the method', () => {
-      const logger = mockLogger();
+  describe('detach(method, hook)', function() {
+    it('should remove the hook from the method', function() {
+      var logger = mockLogger();
       var hookCalls = 0;
-      const handle = () => hookCalls++;
-      const hook = Hook(logger).attach('log', handle);
+      var handle = function() { return hookCalls++; };
+      var hook = Hook(logger).attach('log', handle);
 
       logger.log('a');
       hook.detach('log', handle);
@@ -106,13 +106,13 @@ describe('console-hook', () => {
       assert.equal(hookCalls, 1);
     });
 
-    it('should remove all hooks from method if hook is not provided', () => {
-      const logger = mockLogger();
+    it('should remove all hooks from method if hook is not provided', function() {
+      var logger = mockLogger();
       var hook1Calls = 0;
       var hook2Calls = 0;
-      const handle1 = () => hook1Calls++;
-      const handle2 = () => hook2Calls++;
-      const hook = Hook(logger)
+      var handle1 = function() { return hook1Calls++; };
+      var handle2 = function() { return hook2Calls++; };
+      var hook = Hook(logger)
         .attach('log', handle1)
         .attach('log', handle2);
 
@@ -125,13 +125,13 @@ describe('console-hook', () => {
       assert.equal(hook2Calls, 1);
     });
 
-    it('should remove all hooks from all methods if nothing is provided', () => {
-      const logger = mockLogger();
+    it('should remove all hooks from all methods if nothing is provided', function() {
+      var logger = mockLogger();
       var hook1Calls = 0;
       var hook2Calls = 0;
-      const handle1 = () => hook1Calls++;
-      const handle2 = () => hook2Calls++;
-      const hook = Hook(logger)
+      var handle1 = function() { return hook1Calls++; };
+      var handle2 = function() { return hook2Calls++; };
+      var hook = Hook(logger)
         .attach('log', handle1)
         .attach(handle2);
 
@@ -144,24 +144,24 @@ describe('console-hook', () => {
       assert.equal(hook2Calls, 1);
     });
 
-    it('should return itself', () => {
-      const hook = Hook(mockLogger());
+    it('should return itself', function() {
+      var hook = Hook(mockLogger());
       assert.equal(hook, hook.detach());
     });
   });
 
-  it('should call hooks if a method on the logger is called', () => {
-    const logger = mockLogger();
-    const message = 'test';
+  it('should call hooks if a method on the logger is called', function() {
+    var logger = mockLogger();
+    var message = 'test';
     var globalHookCalled = false;
     var logHookCalled = false;
-    const hook = Hook(logger)
-      .attach(/* global */ (method, args) => {
+    var hook = Hook(logger)
+      .attach(/* global */ function(method, args) {
         assert.equal(method, 'log');
         assert.equal(args[0], message);
         globalHookCalled = true;
       })
-      .attach('log', (method, args) => {
+      .attach('log', function(method, args) {
         assert.equal(method, 'log');
         assert.equal(args[0], message);
         logHookCalled = true;
@@ -173,11 +173,11 @@ describe('console-hook', () => {
     assert.ok(logHookCalled);
   });
 
-  it('should not call hooks within a hook', () => {
-    const logger = mockLogger();
-    const message = 'test';
-    const message2 = 'noop';
-    const hook = Hook(logger).attach((method, args) => {
+  it('should not call hooks within a hook', function() {
+    var logger = mockLogger();
+    var message = 'test';
+    var message2 = 'noop';
+    var hook = Hook(logger).attach(function(method, args) {
       assert.equal(method, 'log');
       assert.equal(args[0], message);
       logger.log(message2);
